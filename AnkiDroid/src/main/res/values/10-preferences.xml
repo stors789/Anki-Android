@@ -24,7 +24,7 @@
     <string name="pref_cat_studying" maxLength="41">Studying</string>
     <string name="pref_cat_system_wide" maxLength="41">System-wide</string>
     <string name="pref_cat_reviewing" maxLength="41">Reviewing</string>
-    <string name="pref_audio_focus">Audio focus</string>
+    <string name="pref_audio_focus" maxLength="41">Audio focus</string>
     <string name="pref_audio_focus_summ">Lower the volume of other apps while playing card audio. Turn off to keep music at its current volume.</string>
     <string name="pref_cat_sync" comment="title of the sync preferences category" maxLength="41">Sync</string>
     <string name="pref_cat_scheduling" maxLength="41">Scheduling</string>
