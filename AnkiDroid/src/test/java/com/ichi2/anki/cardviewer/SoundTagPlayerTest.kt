@@ -5,6 +5,7 @@ package com.ichi2.anki.cardviewer
 import android.content.Context
 import android.media.AudioManager
 import android.media.MediaPlayer
+import androidx.core.content.edit
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.ichi2.anki.R
 import com.ichi2.anki.RobolectricTest
@@ -39,7 +40,7 @@ class SoundTagPlayerTest : RobolectricTest() {
     @Before
     override fun setUp() {
         super.setUp()
-        Prefs.sharedPrefs.edit().remove(targetContext.getString(R.string.audio_focus_enabled_key)).commit()
+        Prefs.sharedPrefs.edit { remove(targetContext.getString(R.string.audio_focus_enabled_key)) }
         audioManager = shadowOf(targetContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager)
         ShadowMediaPlayer.setMediaInfoProvider { ShadowMediaPlayer.MediaInfo(10_000, 0) }
         ShadowMediaPlayer.setCreateListener { mp, _ -> mediaPlayer = mp }
