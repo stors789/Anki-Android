@@ -352,6 +352,7 @@ open class PrefsRepository(
     val showAnswerFeedback by booleanPref(R.string.show_answer_feedback_key, defaultValue = true)
     var showAnswerButtons by booleanPref(R.string.show_answer_buttons_key, true)
     val keepScreenOn by booleanPref(R.string.keep_screen_on_preference, defaultValue = false)
+    var audioFocusEnabled by booleanPref(R.string.audio_focus_enabled_key, defaultValue = true)
     val hideHardAndEasyButtons by booleanPref(R.string.hide_hard_and_easy_key, defaultValue = false)
 
     val doubleTapInterval by intPref(R.string.double_tap_timeout_pref_key, defaultValue = 200)

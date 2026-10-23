@@ -21,6 +21,7 @@ import com.ichi2.anki.common.annotations.NeedsTest
 import com.ichi2.anki.ensureActive
 import com.ichi2.anki.libanki.SoundOrVideoTag
 import com.ichi2.anki.multimedia.getTagType
+import com.ichi2.anki.settings.Prefs
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
@@ -47,6 +48,8 @@ class SoundTagPlayer(
      */
     private var audioManager: AudioManager =
         appContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
+    private var hasAudioFocus = false
 
     // the same instance of an AudioFocusRequestCompat must be used to cancel focus
     private val audioFocusRequest: AudioFocusRequestCompat by lazy {
@@ -130,7 +133,7 @@ class SoundTagPlayer(
                 return continuation.resumeWithException(exception)
             }
 
-            if (requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            if (!Prefs.audioFocusEnabled || requestAudioFocus() == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
                 continuation.ensureActive()
                 Timber.d("starting sound tag")
                 start()
@@ -194,12 +197,16 @@ class SoundTagPlayer(
     @CheckResult
     private fun requestAudioFocus(): Int {
         Timber.d("Requesting audio focus")
-        return AudioManagerCompat.requestAudioFocus(audioManager, audioFocusRequest)
+        return AudioManagerCompat.requestAudioFocus(audioManager, audioFocusRequest).also {
+            hasAudioFocus = it == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
+        }
     }
 
-    private fun abandonAudioFocus(): Int {
+    private fun abandonAudioFocus() {
+        if (!hasAudioFocus) return
         Timber.d("Abandoning audio focus")
-        return AudioManagerCompat.abandonAudioFocusRequest(audioManager, audioFocusRequest)
+        AudioManagerCompat.abandonAudioFocusRequest(audioManager, audioFocusRequest)
+        hasAudioFocus = false
     }
 }
 

@@ -50,6 +50,11 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_cat_advanced">
         <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="@string/audio_focus_enabled_key"
+            android:summary="@string/pref_audio_focus_summ"
+            android:title="@string/pref_audio_focus" />
+        <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="@string/keep_screen_on_preference"
             android:summary="@string/pref_keep_screen_on_summ"
