@@ -20,9 +20,23 @@ jobs:
       - name: Configure local build
         run: |
           printf 'enable_coverage=false\nenable_leak_canary=false\n' > local.properties
-      - name: Check Kotlin style and audio playback behavior
+      - name: Check Kotlin style
         run: |
-          ./gradlew :AnkiDroid:ktlintCheck :AnkiDroid:testFullDebugUnitTest \
+          ./gradlew :AnkiDroid:ktlintCheck --max-workers=2 --stacktrace
+      # The Rust backend cannot be loaded by two SDK classloaders in one test JVM.
+      - name: Test Android 7 audio playback
+        env:
+          JAVA_TOOL_OPTIONS: -Drobolectric.enabledSdks=24
+        run: |
+          ./gradlew :AnkiDroid:testFullDebugUnitTest \
+            --tests com.ichi2.anki.cardviewer.SoundTagPlayerTest \
+            --max-workers=2 --stacktrace
+          cp -r AnkiDroid/build/test-results/testFullDebugUnitTest audio-focus-legacy-results
+      - name: Test Android 16 audio playback and preferences
+        env:
+          JAVA_TOOL_OPTIONS: -Drobolectric.enabledSdks=36
+        run: |
+          ./gradlew :AnkiDroid:testFullDebugUnitTest \
             --tests com.ichi2.anki.cardviewer.SoundTagPlayerTest \
             --tests com.ichi2.anki.cardviewer.CardMediaPlayerTest \
             --tests com.ichi2.anki.settings.PrefsRobolectricTest \
@@ -46,6 +60,7 @@ jobs:
           path: |
             AnkiDroid/build/outputs/apk/full/release/*.apk
             AnkiDroid/build/test-results/testFullDebugUnitTest/*.xml
+            audio-focus-legacy-results/*.xml
             AnkiDroid/build/reports/ktlint/
           if-no-files-found: warn
           retention-days: 30
